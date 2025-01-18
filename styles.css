@@ -30,12 +30,14 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    height: 100vh;
     margin: 0;
-    padding: 0 1rem;
+    padding: 0;
     background-color: var(--background);
     color: var(--text);
     transition: background-color 0.3s ease;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 .container {
@@ -183,15 +185,28 @@ h1 {
 /* Mobile Optimizations */
 @media (max-width: 428px) { /* iPhone 15 width */
   .container {
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 16px;
-    width: min(85%, calc(100% - 2rem));
-    margin: 0.5rem auto;
-    min-height: calc(100vh - 1rem);
+    width: min(85%, calc(100% - 3rem));
+    margin: 1rem auto;
+    height: auto;
+    min-height: unset;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 1.5rem;
+    position: relative;
+    top: unset;
+    left: unset;
+    transform: none;
+    max-width: 380px;
+  }
+
+  body {
+    padding: env(safe-area-inset-top) max(1rem, env(safe-area-inset-right)) env(safe-area-inset-bottom) max(1rem, env(safe-area-inset-left));
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .timer {
@@ -236,12 +251,14 @@ h1 {
   }
 
   .theme-toggle {
-    top: 0.75rem;
-    right: 0.75rem;
+    position: absolute;
+    top: max(0.75rem, env(safe-area-inset-top));
+    right: max(0.75rem, env(safe-area-inset-right));
     width: 32px;
     height: 32px;
     padding: 0.4rem;
     font-size: 1rem;
+    z-index: 10;
   }
 }
 
