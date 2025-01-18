@@ -11,6 +11,8 @@ const statusText = document.getElementById('status-text');
 const modeToggleButton = document.getElementById('mode-toggle');
 const WORK_TIME = 50 * 60; // 50 minutes in seconds
 const REST_TIME = 10 * 60; // 10 minutes in seconds
+const themeToggle = document.getElementById('theme-toggle');
+let isDarkMode = false;
 
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);
@@ -75,6 +77,15 @@ function resetTimer() {
     updateTimer();
 }
 
+function toggleTheme() {
+    isDarkMode = !isDarkMode;
+    document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+    themeToggle.textContent = isDarkMode ? '🌜' : '🌞';
+    
+    // Save preference to localStorage
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+}
+
 modeToggleButton.addEventListener('click', () => {
     switchMode();
     if (timerId !== null) {
@@ -85,6 +96,20 @@ modeToggleButton.addEventListener('click', () => {
 startButton.addEventListener('click', startTimer);
 pauseButton.addEventListener('click', pauseTimer);
 resetButton.addEventListener('click', resetTimer);
+themeToggle.addEventListener('click', toggleTheme);
 
 // Initialize the timer
-resetTimer(); 
+resetTimer();
+
+// Add this to initialize theme from localStorage
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        isDarkMode = savedTheme === 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        themeToggle.textContent = isDarkMode ? '🌜' : '🌞';
+    }
+}
+
+// Call initializeTheme before resetTimer()
+initializeTheme(); 
