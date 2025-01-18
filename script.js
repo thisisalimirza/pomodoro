@@ -14,7 +14,10 @@ const REST_TIME = 10 * 60; // 10 minutes in seconds
 const themeToggle = document.getElementById('theme-toggle');
 const timerToggleButton = document.getElementById('timer-toggle');
 const addTimeButton = document.getElementById('add-time');
+const focusModal = document.getElementById('focus-modal');
+const focusInput = document.getElementById('focus-input');
 let isDarkMode = false;
+let currentFocus = '';
 
 // Initially hide the button
 addTimeButton.style.display = 'none';
@@ -46,31 +49,51 @@ function switchMode() {
 
 function toggleTimer() {
     if (timerId === null) {
-        // Start timer
         if (!timeLeft) {
             timeLeft = isWorkTime ? WORK_TIME : REST_TIME;
         }
-        timerId = setInterval(() => {
-            timeLeft--;
-            updateTimer();
-            
-            if (timeLeft === 0) {
-                clearInterval(timerId);
-                timerId = null;
-                switchMode();
-                alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
-                timerToggleButton.textContent = 'Start';
-                addTimeButton.style.display = 'none'; // Hide button when timer stops
-            }
-        }, 1000);
-        timerToggleButton.textContent = 'Pause';
-        addTimeButton.style.display = 'block'; // Show button when timer starts
+        
+        if (isWorkTime && !currentFocus) {
+            focusModal.showModal();
+            return;
+        }
+        
+        startTimer();
     } else {
-        // Pause timer
         clearInterval(timerId);
         timerId = null;
         timerToggleButton.textContent = 'Start';
-        addTimeButton.style.display = 'none'; // Hide button when timer is paused
+        addTimeButton.style.display = 'none';
+    }
+}
+
+function startTimer() {
+    timerId = setInterval(() => {
+        timeLeft--;
+        updateTimer();
+        
+        if (timeLeft === 0) {
+            clearInterval(timerId);
+            timerId = null;
+            switchMode();
+            alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
+            timerToggleButton.textContent = 'Start';
+            addTimeButton.style.display = 'none';
+            currentFocus = '';
+            updateStatusText();
+        }
+    }, 1000);
+    timerToggleButton.textContent = 'Pause';
+    addTimeButton.style.display = 'block';
+}
+
+function updateStatusText() {
+    if (isWorkTime && currentFocus) {
+        statusText.innerHTML = `Currently focusing on:<br><span class="current-focus">${currentFocus}</span>`;
+        document.title = `${currentFocus} - ${minutesDisplay.textContent}:${secondsDisplay.textContent}`;
+    } else {
+        statusText.textContent = isWorkTime ? 'Enter a Deep Work Session' : 'Take a break';
+        document.title = `${minutesDisplay.textContent}:${secondsDisplay.textContent} - Pomodoro Timer`;
     }
 }
 
@@ -79,11 +102,11 @@ function resetTimer() {
     timerId = null;
     isWorkTime = true;
     timeLeft = WORK_TIME;
-    statusText.textContent = 'Enter a Deep Work Session';
+    currentFocus = '';
+    updateStatusText();
     modeToggleButton.textContent = 'Switch to Break';
     timerToggleButton.textContent = 'Start Focus Session';
-    document.title = "Pomodoro Timer";
-    addTimeButton.style.display = 'none'; // Hide button on reset
+    addTimeButton.style.display = 'none';
     updateTimer();
 }
 
@@ -129,4 +152,14 @@ function initializeTheme() {
 }
 
 // Call initializeTheme before resetTimer()
-initializeTheme(); 
+initializeTheme();
+
+// Add event listener for the focus modal form
+focusModal.querySelector('form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    currentFocus = focusInput.value.trim();
+    focusInput.value = '';
+    focusModal.close();
+    updateStatusText();
+    startTimer();
+}); 
