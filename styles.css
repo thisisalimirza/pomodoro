@@ -368,6 +368,7 @@ html {
     width: 26px;
     height: 26px;
     min-width: 26px;
+    max-width: 26px;
     font-size: 18px;
     font-weight: 300;
     cursor: pointer;
@@ -429,5 +430,19 @@ html {
             padding-right: max(1.5rem, env(safe-area-inset-right));
             padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
         }
+    }
+}
+
+/* Ensure these styles are maintained on mobile */
+@media (max-width: 428px) {
+    .close-modal {
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+        max-width: 26px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        top: -10px !important;
+        right: -10px !important;
     }
 } 
