@@ -248,6 +248,11 @@ h1 {
   #timer-toggle {
     padding: 1rem;
   }
+
+  .add-time-button {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* Safe area insets for notched iPhones */
@@ -268,4 +273,25 @@ html {
 /* Disable double-tap to zoom */
 * {
   touch-action: manipulation;
+}
+
+.add-time-button {
+    background-color: var(--surface);
+    color: var(--primary);
+    border: 1px solid var(--border);
+    grid-column: span 2;
+    font-size: 0.95rem;
+    display: none; /* Hide by default */
+}
+
+.add-time-button:hover {
+    background-color: var(--background);
+    color: var(--primary-dark);
+}
+
+/* Update the secondary-controls grid for the new button */
+.secondary-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
 } 

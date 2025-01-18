@@ -13,6 +13,7 @@ const WORK_TIME = 50 * 60; // 50 minutes in seconds
 const REST_TIME = 10 * 60; // 10 minutes in seconds
 const themeToggle = document.getElementById('theme-toggle');
 const timerToggleButton = document.getElementById('timer-toggle');
+const addTimeButton = document.getElementById('add-time');
 let isDarkMode = false;
 
 function updateTimer() {
@@ -56,14 +57,17 @@ function toggleTimer() {
                 switchMode();
                 alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
                 timerToggleButton.textContent = 'Start';
+                addTimeButton.style.display = 'none'; // Hide button when timer stops
             }
         }, 1000);
         timerToggleButton.textContent = 'Pause';
+        addTimeButton.style.display = 'block'; // Show button when timer starts
     } else {
         // Pause timer
         clearInterval(timerId);
         timerId = null;
         timerToggleButton.textContent = 'Start';
+        addTimeButton.style.display = 'none'; // Hide button when timer is paused
     }
 }
 
@@ -76,6 +80,7 @@ function resetTimer() {
     modeToggleButton.textContent = 'Switch to Break';
     timerToggleButton.textContent = 'Start Focus Session';
     document.title = "Pomodoro Timer";
+    addTimeButton.style.display = 'none'; // Hide button on reset
     updateTimer();
 }
 
@@ -88,6 +93,13 @@ function toggleTheme() {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
 }
 
+function addFiveMinutes() {
+    if (timerId !== null) {  // Only allow adding time when timer is running
+        timeLeft += 5 * 60;  // Add 5 minutes (300 seconds)
+        updateTimer();
+    }
+}
+
 modeToggleButton.addEventListener('click', () => {
     switchMode();
     if (timerId !== null) {
@@ -98,6 +110,7 @@ modeToggleButton.addEventListener('click', () => {
 timerToggleButton.addEventListener('click', toggleTimer);
 resetButton.addEventListener('click', resetTimer);
 themeToggle.addEventListener('click', toggleTheme);
+addTimeButton.addEventListener('click', addFiveMinutes);
 
 // Initialize the timer
 resetTimer();
