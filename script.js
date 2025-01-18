@@ -80,7 +80,7 @@ function resetTimer() {
 function toggleTheme() {
     isDarkMode = !isDarkMode;
     document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
-    themeToggle.textContent = isDarkMode ? '🌜' : '🌞';
+    themeToggle.textContent = isDarkMode ? '🌞' : '🌜';
     
     // Save preference to localStorage
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
@@ -107,7 +107,7 @@ function initializeTheme() {
     if (savedTheme) {
         isDarkMode = savedTheme === 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
-        themeToggle.textContent = isDarkMode ? '🌜' : '🌞';
+        themeToggle.textContent = isDarkMode ? '🌞' : '🌜';
     }
 }
 
