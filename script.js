@@ -16,6 +16,9 @@ const timerToggleButton = document.getElementById('timer-toggle');
 const addTimeButton = document.getElementById('add-time');
 let isDarkMode = false;
 
+// Initially hide the button
+addTimeButton.style.display = 'none';
+
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
