@@ -398,13 +398,18 @@ html {
 }
 
 /* Mobile Optimizations for Modal */
-@media (max-width: 428px) { /* iPhone 15 width */
+@media (max-width: 428px) {
     .focus-modal {
         width: calc(100% - 2rem);
         max-width: none;
-        margin: 1rem;
+        margin: 0;
         padding: 1.5rem;
         border-radius: 16px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
     }
 
     .focus-modal h2 {
@@ -413,6 +418,8 @@ html {
     }
 
     .focus-modal input {
+        width: 100%;
+        box-sizing: border-box;
         padding: 0.875rem;
         font-size: 1rem;
         margin-bottom: 1rem;
@@ -421,15 +428,8 @@ html {
     .focus-modal form button {
         padding: 0.875rem;
         font-size: 1rem;
-    }
-
-    /* Ensure modal respects safe areas on iPhone */
-    @supports (padding: max(0px)) {
-        .focus-modal {
-            padding-left: max(1.5rem, env(safe-area-inset-left));
-            padding-right: max(1.5rem, env(safe-area-inset-right));
-            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-        }
+        width: 100%;
+        box-sizing: border-box;
     }
 }
 
