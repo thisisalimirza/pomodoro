@@ -71,6 +71,10 @@ function startTimer() {
     timerId = setInterval(() => {
         timeLeft--;
         updateTimer();
+        // Update document title with current time and focus
+        if (isWorkTime && currentFocus) {
+            document.title = `${minutesDisplay.textContent}:${secondsDisplay.textContent} - ${currentFocus}`;
+        }
         
         if (timeLeft === 0) {
             clearInterval(timerId);
@@ -79,7 +83,7 @@ function startTimer() {
             alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
             timerToggleButton.textContent = 'Start';
             addTimeButton.style.display = 'none';
-            currentFocus = '';
+            currentFocus = ''; // Clear focus when timer ends
             updateStatusText();
         }
     }, 1000);
@@ -90,10 +94,10 @@ function startTimer() {
 function updateStatusText() {
     if (isWorkTime && currentFocus) {
         statusText.innerHTML = `Currently focusing on:<br><span class="current-focus">${currentFocus}</span>`;
-        document.title = `${currentFocus} - ${minutesDisplay.textContent}:${secondsDisplay.textContent}`;
+        document.title = `${minutesDisplay.textContent}:${secondsDisplay.textContent} - ${currentFocus}`;
     } else {
         statusText.textContent = isWorkTime ? 'Enter a Deep Work Session' : 'Take a break';
-        document.title = `${minutesDisplay.textContent}:${secondsDisplay.textContent} - Pomodoro Timer`;
+        document.title = 'Pomodoro Timer';
     }
 }
 
