@@ -73,8 +73,8 @@ function resetTimer() {
     isWorkTime = true;
     timeLeft = WORK_TIME;
     statusText.textContent = 'Enter a Deep Work Session';
-    modeToggleButton.textContent = 'Rest Mode';
-    startButton.disabled = false;
+    modeToggleButton.textContent = 'Switch to Break';
+    timerToggleButton.textContent = 'Start Focus Session';
     document.title = "Pomodoro Timer";
     updateTimer();
 }

@@ -2,25 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Pomodoro Timer</title>
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="container">
-        <button class="theme-toggle" id="theme-toggle">🌞</button>
-        <h1>Pomodoro Timer</h1>
+        <button class="theme-toggle" id="theme-toggle">🌜</button>
+        <h1>Focus Timer</h1>
         <div class="status">
             <p id="status-text">Enter a Deep Work Session</p>
         </div>
         <div class="timer">
-            <span id="minutes">50</span>:<span id="seconds">00</span>
+            <span id="minutes">50</span><span>:</span><span id="seconds">00</span>
         </div>
         <div class="controls">
-            <button id="timer-toggle">Start</button>
-            <button id="reset">Reset</button>
-            <button id="mode-toggle">Rest Mode</button>
+            <button id="timer-toggle">Start Focus Session</button>
+            <div class="secondary-controls">
+                <button id="mode-toggle">Switch to Break</button>
+                <button id="reset">Reset</button>
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
