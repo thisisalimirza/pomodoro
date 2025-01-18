@@ -12,6 +12,7 @@ const modeToggleButton = document.getElementById('mode-toggle');
 const WORK_TIME = 50 * 60; // 50 minutes in seconds
 const REST_TIME = 10 * 60; // 10 minutes in seconds
 const themeToggle = document.getElementById('theme-toggle');
+const timerToggleButton = document.getElementById('timer-toggle');
 let isDarkMode = false;
 
 function updateTimer() {
@@ -39,8 +40,9 @@ function switchMode() {
     updateTimer();
 }
 
-function startTimer() {
+function toggleTimer() {
     if (timerId === null) {
+        // Start timer
         if (!timeLeft) {
             timeLeft = isWorkTime ? WORK_TIME : REST_TIME;
         }
@@ -53,16 +55,16 @@ function startTimer() {
                 timerId = null;
                 switchMode();
                 alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
+                timerToggleButton.textContent = 'Start';
             }
         }, 1000);
-        startButton.disabled = true;
+        timerToggleButton.textContent = 'Pause';
+    } else {
+        // Pause timer
+        clearInterval(timerId);
+        timerId = null;
+        timerToggleButton.textContent = 'Start';
     }
-}
-
-function pauseTimer() {
-    clearInterval(timerId);
-    timerId = null;
-    startButton.disabled = false;
 }
 
 function resetTimer() {
@@ -93,8 +95,7 @@ modeToggleButton.addEventListener('click', () => {
     }
 });
 
-startButton.addEventListener('click', startTimer);
-pauseButton.addEventListener('click', pauseTimer);
+timerToggleButton.addEventListener('click', toggleTimer);
 resetButton.addEventListener('click', resetTimer);
 themeToggle.addEventListener('click', toggleTheme);
 

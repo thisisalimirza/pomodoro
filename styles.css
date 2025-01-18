@@ -77,23 +77,14 @@ h1 {
     transition: all 0.2s ease;
 }
 
-#start {
+#timer-toggle {
     background-color: var(--primary);
     color: white;
     grid-column: span 2;
 }
 
-#start:hover {
+#timer-toggle:hover {
     background-color: var(--primary-dark);
-}
-
-#pause {
-    background-color: var(--text-secondary);
-    color: white;
-}
-
-#pause:hover {
-    background-color: var(--text);
 }
 
 #reset {
