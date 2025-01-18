@@ -284,6 +284,7 @@ html {
 }
 
 .focus-modal {
+    position: relative;
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 2rem;
@@ -291,6 +292,7 @@ html {
     color: var(--text);
     max-width: 400px;
     width: 90%;
+    overflow: visible;
 }
 
 .focus-modal::backdrop {
@@ -315,7 +317,7 @@ html {
     margin-bottom: 1.5rem;
 }
 
-.focus-modal button {
+.focus-modal form button {
     background: var(--primary);
     color: white;
     border: none;
@@ -326,7 +328,7 @@ html {
     width: 100%;
 }
 
-.focus-modal button:hover {
+.focus-modal form button:hover {
     background: var(--primary-dark);
 }
 
@@ -335,4 +337,97 @@ html {
     color: var(--primary);
     font-weight: 500;
     margin-top: 0.5rem;
+}
+
+.focus-modal .modal-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.focus-modal .modal-buttons button {
+    flex: 1;
+}
+
+.focus-modal .cancel-button {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.focus-modal .cancel-button:hover {
+    background: var(--background);
+}
+
+.close-modal {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    line-height: 0;
+    transform: rotate(45deg);
+}
+
+.close-modal::before {
+    content: '+';
+    position: relative;
+    top: -1px;
+}
+
+.close-modal:hover {
+    background: #ff2222;
+    transform: rotate(45deg) scale(1.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Optimizations for Modal */
+@media (max-width: 428px) { /* iPhone 15 width */
+    .focus-modal {
+        width: calc(100% - 2rem);
+        max-width: none;
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+
+    .focus-modal h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .focus-modal input {
+        padding: 0.875rem;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .focus-modal form button {
+        padding: 0.875rem;
+        font-size: 1rem;
+    }
+
+    /* Ensure modal respects safe areas on iPhone */
+    @supports (padding: max(0px)) {
+        .focus-modal {
+            padding-left: max(1.5rem, env(safe-area-inset-left));
+            padding-right: max(1.5rem, env(safe-area-inset-right));
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+        }
+    }
 } 

@@ -16,6 +16,7 @@ const timerToggleButton = document.getElementById('timer-toggle');
 const addTimeButton = document.getElementById('add-time');
 const focusModal = document.getElementById('focus-modal');
 const focusInput = document.getElementById('focus-input');
+const closeModalButton = document.getElementById('close-modal');
 let isDarkMode = false;
 let currentFocus = '';
 
@@ -60,10 +61,7 @@ function toggleTimer() {
         
         startTimer();
     } else {
-        clearInterval(timerId);
-        timerId = null;
-        timerToggleButton.textContent = 'Start';
-        addTimeButton.style.display = 'none';
+        pauseTimer();
     }
 }
 
@@ -166,4 +164,17 @@ focusModal.querySelector('form').addEventListener('submit', (e) => {
     focusModal.close();
     updateStatusText();
     startTimer();
-}); 
+});
+
+closeModalButton.addEventListener('click', () => {
+    focusModal.close();
+    focusInput.value = '';
+});
+
+// Add this new function to handle pausing
+function pauseTimer() {
+    clearInterval(timerId);
+    timerId = null;
+    timerToggleButton.textContent = 'Start';
+    addTimeButton.style.display = 'none';
+} 
