@@ -14,42 +14,27 @@
             <form method="dialog">
                 <h2>What are you focusing on?</h2>
                 <input type="text" id="focus-input" placeholder="Enter your focus for this session..." required>
-                <div class="sound-selection">
-                    <h3>Choose Background Sound</h3>
-                    <div class="sound-options">
-                        <label class="sound-option" data-sound="rain">
-                            <input type="radio" name="background-sound" value="rain" checked>
-                            <span>🌧️ Rain</span>
-                        </label>
-                        <label class="sound-option" data-sound="waves">
-                            <input type="radio" name="background-sound" value="waves">
-                            <span>🌊 Ocean Waves</span>
-                        </label>
-                        <label class="sound-option" data-sound="brook">
-                            <input type="radio" name="background-sound" value="brook">
-                            <span>💧 Babbling Brook</span>
-                        </label>
-                        <label class="sound-option" data-sound="birds">
-                            <input type="radio" name="background-sound" value="birds">
-                            <span>🐦 Morning Birds</span>
-                        </label>
-                        <label class="sound-option" data-sound="crickets">
-                            <input type="radio" name="background-sound" value="crickets">
-                            <span>🦗 Crickets</span>
-                        </label>
-                        <label class="sound-option" data-sound="katydids">
-                            <input type="radio" name="background-sound" value="katydids">
-                            <span>🌙 Night Sounds</span>
-                        </label>
-                        <label class="sound-option" data-sound="winter">
-                            <input type="radio" name="background-sound" value="winter">
-                            <span>❄️ Winter Wind</span>
-                        </label>
-                        <label class="sound-option" data-sound="none">
-                            <input type="radio" name="background-sound" value="none">
-                            <span>🔇 No Sound</span>
-                        </label>
-                    </div>
+                <div class="sound-options">
+                    <label class="sound-option" data-sound="deep">
+                        <input type="radio" name="background-sound" value="deep" checked>
+                        <span>🧠 Deep Focus</span>
+                        <div class="tooltip">Best for complex tasks, studying, and analytical work. Uses beta waves to enhance concentration.</div>
+                    </label>
+                    <label class="sound-option" data-sound="creative">
+                        <input type="radio" name="background-sound" value="creative">
+                        <span>🎨 Creative Mode</span>
+                        <div class="tooltip">Perfect for brainstorming, writing, and artistic work. Theta waves help unlock creativity.</div>
+                    </label>
+                    <label class="sound-option" data-sound="chill">
+                        <input type="radio" name="background-sound" value="chill">
+                        <span>🌊 Chill Focus</span>
+                        <div class="tooltip">Ideal for light reading, planning, and relaxed work. Alpha waves promote calm alertness.</div>
+                    </label>
+                    <label class="sound-option" data-sound="none">
+                        <input type="radio" name="background-sound" value="none">
+                        <span>🔇 No Sound</span>
+                        <div class="tooltip">Work in complete silence. Best when your environment is already quiet.</div>
+                    </label>
                 </div>
                 <button type="submit">Start Focusing</button>
             </form>
@@ -64,37 +49,25 @@
                     <input type="range" id="volume-slider" min="0" max="100" value="30">
                 </div>
                 <div class="sound-options">
-                    <label class="sound-option" data-sound="rain">
-                        <input type="radio" name="background-sound-control" value="rain">
-                        <span>🌧️ Rain</span>
+                    <label class="sound-option" data-sound="deep">
+                        <input type="radio" name="background-sound-control" value="deep">
+                        <span>🧠 Deep Focus</span>
+                        <div class="tooltip">Best for complex tasks, studying, and analytical work. Uses beta waves to enhance concentration.</div>
                     </label>
-                    <label class="sound-option" data-sound="waves">
-                        <input type="radio" name="background-sound-control" value="waves">
-                        <span>🌊 Ocean Waves</span>
+                    <label class="sound-option" data-sound="creative">
+                        <input type="radio" name="background-sound-control" value="creative">
+                        <span>🎨 Creative Mode</span>
+                        <div class="tooltip">Perfect for brainstorming, writing, and artistic work. Theta waves help unlock creativity.</div>
                     </label>
-                    <label class="sound-option" data-sound="brook">
-                        <input type="radio" name="background-sound-control" value="brook">
-                        <span>💧 Babbling Brook</span>
-                    </label>
-                    <label class="sound-option" data-sound="birds">
-                        <input type="radio" name="background-sound-control" value="birds">
-                        <span>🐦 Morning Birds</span>
-                    </label>
-                    <label class="sound-option" data-sound="crickets">
-                        <input type="radio" name="background-sound-control" value="crickets">
-                        <span>🦗 Crickets</span>
-                    </label>
-                    <label class="sound-option" data-sound="katydids">
-                        <input type="radio" name="background-sound-control" value="katydids">
-                        <span>🌙 Night Sounds</span>
-                    </label>
-                    <label class="sound-option" data-sound="winter">
-                        <input type="radio" name="background-sound-control" value="winter">
-                        <span>❄️ Winter Wind</span>
+                    <label class="sound-option" data-sound="chill">
+                        <input type="radio" name="background-sound-control" value="chill">
+                        <span>🌊 Chill Focus</span>
+                        <div class="tooltip">Ideal for light reading, planning, and relaxed work. Alpha waves promote calm alertness.</div>
                     </label>
                     <label class="sound-option" data-sound="none">
                         <input type="radio" name="background-sound-control" value="none">
                         <span>🔇 No Sound</span>
+                        <div class="tooltip">Work in complete silence. Best when your environment is already quiet.</div>
                     </label>
                 </div>
             </div>
@@ -105,6 +78,13 @@
         </div>
         <div class="timer">
             <span id="minutes">50</span><span>:</span><span id="seconds">00</span>
+        </div>
+        <div class="streak-container">
+            <div class="streak-count">
+                <span id="streak-number">0</span>
+                <span class="streak-label">Focus Sessions</span>
+            </div>
+            <div class="streak-flame">🔥</div>
         </div>
         <div class="controls">
             <button id="timer-toggle">Start Focus Session</button>

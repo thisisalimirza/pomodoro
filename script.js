@@ -6,6 +6,8 @@ let currentFocus = '';
 let currentSound = null;
 let currentSoundLoop = null;
 let currentVolume = 0.3;
+let streak = 0;
+let currentYouTubePlayer = null;
 
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
@@ -14,6 +16,7 @@ const pauseButton = document.getElementById('pause');
 const resetButton = document.getElementById('reset');
 const statusText = document.getElementById('status-text');
 const modeToggleButton = document.getElementById('mode-toggle');
+const streakNumber = document.getElementById('streak-number');
 const WORK_TIME = 50 * 60; // 50 minutes in seconds
 const REST_TIME = 10 * 60; // 10 minutes in seconds
 const themeToggle = document.getElementById('theme-toggle');
@@ -26,17 +29,24 @@ const soundControlToggle = document.getElementById('sound-control-toggle');
 const soundControlPanel = document.getElementById('sound-control-panel');
 const volumeSlider = document.getElementById('volume-slider');
 
-// Sound URLs - using local sound files
+// Sound URLs - Brain wave frequencies and nature sounds
 const SOUND_URLS = {
-    rain: 'https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3',
-    waves: 'https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3',
-    fireplace: 'https://assets.mixkit.co/active_storage/sfx/2271/2271-preview.mp3',
-    birds: 'sounds/Morning Bird Songs.mp3',
-    katydids: 'sounds/Katydids in the Night.mp3',
-    crickets: 'sounds/Crickets and Woodpecker at Dusk.mp3',
-    winter: 'sounds/Cold Winter Snow and Wind.mp3',
-    brook: 'sounds/Babbling Brook.mp3'
+    deep: '5lN3X5qVoqQ',      // Beta waves for focus
+    creative: 'BK307tqe5q0',   // Theta waves for creativity
+    chill: 'WPni755-Krg',      // Alpha waves for relaxed focus
+    nature_birds: 'sounds/Morning Bird Songs.mp3',
+    nature_crickets: 'sounds/Crickets and Woodpecker at Dusk.mp3',
+    nature_brook: 'sounds/Babbling Brook.mp3',
+    nature_wind: 'sounds/Cold Winter Snow and Wind.mp3',
+    nature_katydids: 'sounds/Katydids in the Night.mp3',
+    none: null
 };
+
+// Load YouTube IFrame API
+const tag = document.createElement('script');
+tag.src = "https://www.youtube.com/iframe_api";
+const firstScriptTag = document.getElementsByTagName('script')[0];
+firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 const soundOptions = document.querySelectorAll('.sound-option');
 soundOptions.forEach(option => {
@@ -46,11 +56,29 @@ soundOptions.forEach(option => {
     });
 });
 
-function playBackgroundSound(soundType) {
+function playBackgroundSound(soundType, shouldResume = false) {
+    // If we're resuming and have a player/sound already, just resume it
+    if (shouldResume) {
+        if (currentYouTubePlayer && currentYouTubePlayer.playVideo) {
+            currentYouTubePlayer.playVideo();
+            return;
+        }
+        if (currentSound) {
+            currentSound.play().catch(error => {
+                console.error('Error resuming sound:', error);
+            });
+            return;
+        }
+    }
+
     // Stop any currently playing sound
     if (currentSound) {
         currentSound.pause();
         currentSound = null;
+    }
+    if (currentYouTubePlayer) {
+        currentYouTubePlayer.destroy();
+        currentYouTubePlayer = null;
     }
     if (currentSoundLoop) {
         clearInterval(currentSoundLoop);
@@ -60,27 +88,49 @@ function playBackgroundSound(soundType) {
     // If 'none' is selected or no sound type provided, just return
     if (!soundType || soundType === 'none') return;
 
-    // Create and play the new sound
     const soundUrl = SOUND_URLS[soundType];
-    if (soundUrl) {
+    if (!soundUrl) return;
+
+    // Check if it's a local sound file (starts with 'sounds/')
+    if (soundUrl.startsWith('sounds/')) {
         currentSound = new Audio(soundUrl);
         currentSound.volume = currentVolume;
+        currentSound.loop = true;
         currentSound.dataset.soundType = soundType;
         
-        // Play the sound and set up looping
-        const playSound = () => {
-            currentSound.currentTime = 0;
-            currentSound.play();
-        };
-        
-        playSound();
-        currentSoundLoop = setInterval(playSound, 4000);
+        currentSound.play().catch(error => {
+            console.error('Error playing sound:', error);
+        });
+    } else {
+        // It's a YouTube video ID
+        const playerDiv = document.createElement('div');
+        playerDiv.id = 'youtube-player';
+        playerDiv.style.display = 'none';
+        document.body.appendChild(playerDiv);
 
-        // Update the radio button in the control panel
-        const radioButton = document.querySelector(`input[name="background-sound-control"][value="${soundType}"]`);
-        if (radioButton) {
-            radioButton.checked = true;
-        }
+        currentYouTubePlayer = new YT.Player('youtube-player', {
+            height: '0',
+            width: '0',
+            videoId: soundUrl,
+            playerVars: {
+                'autoplay': 1,
+                'loop': 1,
+                'playlist': soundUrl,
+                'controls': 0
+            },
+            events: {
+                'onReady': (event) => {
+                    event.target.setVolume(currentVolume * 100);
+                    event.target.playVideo();
+                }
+            }
+        });
+    }
+
+    // Update the radio button in the control panel
+    const radioButton = document.querySelector(`input[name="background-sound-control"][value="${soundType}"]`);
+    if (radioButton) {
+        radioButton.checked = true;
     }
 }
 
@@ -141,6 +191,10 @@ function startTimer() {
         if (timeLeft === 0) {
             clearInterval(timerId);
             timerId = null;
+            if (isWorkTime) {
+                // Only increment streak when completing a work session
+                incrementStreak();
+            }
             switchMode();
             alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
             timerToggleButton.textContent = 'Start';
@@ -154,8 +208,12 @@ function startTimer() {
     soundControlToggle.style.display = 'flex';
     
     // Resume audio if it was previously playing
-    if (currentSound && currentSound.dataset.soundType) {
-        playBackgroundSound(currentSound.dataset.soundType);
+    if (currentSound || currentYouTubePlayer) {
+        const currentSoundType = currentSound?.dataset?.soundType || 
+            document.querySelector('input[name="background-sound-control"]:checked')?.value;
+        if (currentSoundType) {
+            playBackgroundSound(currentSoundType, true);
+        }
     }
 }
 
@@ -175,6 +233,7 @@ function resetTimer() {
     isWorkTime = true;
     timeLeft = WORK_TIME;
     currentFocus = '';
+    resetStreak();
     if (currentSound) {
         currentSound.pause();
         currentSound = null;
@@ -188,8 +247,8 @@ function resetTimer() {
     timerToggleButton.textContent = 'Start Focus Session';
     addTimeButton.style.display = 'none';
     updateTimer();
-    soundControlToggle.style.display = 'none';  // Hide sound control on reset
-    soundControlPanel.close();  // Close sound panel if open
+    soundControlToggle.style.display = 'none';
+    soundControlPanel.close();
 }
 
 function toggleTheme() {
@@ -253,6 +312,7 @@ focusModal.querySelector('form').addEventListener('submit', (e) => {
 closeModalButton.addEventListener('click', () => {
     focusModal.close();
     focusInput.value = '';
+    soundControlPanel.close();
 });
 
 // Add this new function to handle pausing
@@ -264,9 +324,14 @@ function pauseTimer() {
     soundControlToggle.style.display = 'none';
     soundControlPanel.close();
     
-    // Pause the audio if it's playing
+    // Pause any playing audio
     if (currentSound) {
         currentSound.pause();
+    }
+    if (currentYouTubePlayer && currentYouTubePlayer.pauseVideo) {
+        currentYouTubePlayer.pauseVideo();
+    }
+    if (currentSoundLoop) {
         clearInterval(currentSoundLoop);
         currentSoundLoop = null;
     }
@@ -313,4 +378,33 @@ function updateVolume(value) {
     if (currentSound) {
         currentSound.volume = currentVolume;
     }
+    if (currentYouTubePlayer && currentYouTubePlayer.setVolume) {
+        currentYouTubePlayer.setVolume(value);
+    }
 }
+
+function updateStreak() {
+    streakNumber.textContent = streak;
+    localStorage.setItem('pomodoro-streak', streak.toString());
+}
+
+function loadStreak() {
+    const savedStreak = localStorage.getItem('pomodoro-streak');
+    if (savedStreak) {
+        streak = parseInt(savedStreak, 10);
+        updateStreak();
+    }
+}
+
+function incrementStreak() {
+    streak++;
+    updateStreak();
+}
+
+function resetStreak() {
+    streak = 0;
+    updateStreak();
+}
+
+// Load streak when the page loads
+loadStreak();

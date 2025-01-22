@@ -73,6 +73,47 @@ h1 {
     line-height: 1;
 }
 
+.streak-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--background);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.streak-count {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+#streak-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.streak-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.streak-flame {
+    font-size: 1.5rem;
+    animation: flame-pulse 2s ease-in-out infinite;
+}
+
+@keyframes flame-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
 .controls {
     display: flex;
     flex-direction: column;
@@ -339,41 +380,107 @@ html {
     box-sizing: border-box;
 }
 
-.sound-selection {
-    margin-bottom: 1.5rem;
+.sound-prompt {
+    background: none;
+    border: none;
+    color: var(--text);
+    font-size: 0.9rem;
+    padding: 0.75rem 0;
+    margin: 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: color 0.2s ease;
 }
 
-.sound-selection h3 {
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
-    color: var(--text);
-    text-align: center;
+.sound-prompt:hover {
+    color: var(--primary);
+}
+
+.sound-prompt::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+    margin-right: 6px;
+}
+
+.sound-prompt.active::after {
+    transform: rotate(-135deg);
+    margin-top: 4px;
+}
+
+.sound-selection {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.sound-selection.active {
+    max-height: 500px;
+    opacity: 1;
+    margin: 1rem 0;
 }
 
 .sound-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
-    width: 100%;
+    margin: 1.5rem 0;
 }
 
 .sound-option {
+    position: relative;
     display: flex;
     align-items: center;
-    padding: 0.875rem;
+    justify-content: center;
+    padding: 0.75rem;
     border: 1px solid var(--border);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
     background: var(--surface);
-    text-align: center;
-    justify-content: center;
+    z-index: 1;
 }
 
 .sound-option:hover {
     border-color: var(--primary);
-    background: var(--background);
     transform: translateY(-1px);
+    z-index: 2;
+}
+
+.sound-option .tooltip {
+    position: absolute;
+    top: auto;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    width: max-content;
+    max-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+    margin-bottom: 10px;
+}
+
+.sound-option:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
 }
 
 .sound-option input[type="radio"] {
@@ -396,19 +503,7 @@ html {
 
 .sound-option input[type="radio"]:checked + span {
     color: var(--primary);
-    font-weight: 600;
-}
-
-/* Mobile Optimizations */
-@media (max-width: 428px) {
-    .sound-options {
-        grid-template-columns: 1fr;
-        gap: 0.5rem;
-    }
-    
-    .sound-option {
-        padding: 0.75rem;
-    }
+    font-weight: 500;
 }
 
 .focus-modal form {
@@ -542,8 +637,8 @@ html {
         padding: 0.625rem;
     }
     
-    .sound-selection h3 {
-        font-size: 1rem;
+    .sound-prompt {
+        font-size: 0.9rem;
         margin-bottom: 0.75rem;
     }
 }
@@ -596,10 +691,11 @@ html {
     border-radius: 12px;
     padding: 1.5rem;
     z-index: 1000;
-    width: 90%;
-    max-width: 320px;
+    width: min(90%, 320px);
     box-shadow: var(--shadow);
     margin: 0;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
 .sound-control-panel::backdrop {
@@ -611,6 +707,7 @@ html {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    width: 100%;
 }
 
 .sound-control-content h3 {
@@ -656,17 +753,23 @@ html {
 
 .sound-control-panel .sound-options {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
+    margin-top: 1rem;
+    width: 100%;
 }
 
 .sound-control-panel .sound-option {
-    background: var(--background);
-    border: 1px solid var(--border);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 0.75rem;
+    border: 1px solid var(--border);
     border-radius: 12px;
     cursor: pointer;
     transition: all 0.2s ease;
+    background: var(--surface);
 }
 
 .sound-control-panel .sound-option:hover {
@@ -674,19 +777,45 @@ html {
     transform: translateY(-1px);
 }
 
-.sound-control-panel .sound-option:has(input[type="radio"]:checked) {
+.sound-control-panel .sound-option .tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
     background: var(--surface);
-    border-color: var(--primary);
-    box-shadow: 0 0 0 1px var(--primary);
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    width: max-content;
+    max-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.sound-control-panel .sound-option:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
 }
 
 /* Mobile adjustments */
 @media (max-width: 428px) {
     .sound-control-panel {
-        width: calc(100% - 3rem);
-        max-width: none;
-        margin: 1rem;
+        width: min(calc(100% - 2rem), 320px);
         padding: 1.25rem;
+        margin: 0;
+    }
+    
+    .sound-control-panel .sound-options {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
     }
 }
 
@@ -710,4 +839,294 @@ dialog.sound-control-panel {
 dialog.sound-control-panel::backdrop {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(3px);
+}
+
+.sound-selection {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.background-sounds-toggle {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 0;
+    margin: 1rem 0;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: color 0.2s ease;
+}
+
+.background-sounds-toggle:hover {
+    color: var(--text);
+}
+
+.background-sounds-toggle::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+    margin-left: 8px;
+}
+
+.background-sounds-toggle.active::after {
+    transform: rotate(-135deg);
+}
+
+.sound-selection {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: all 0.3s ease-out;
+}
+
+.sound-selection.active {
+    max-height: 500px;
+    opacity: 1;
+    margin: 1rem 0;
+}
+
+.sound-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.sound-option {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--surface);
+}
+
+.sound-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.sound-option .tooltip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    width: max-content;
+    max-width: 200px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 100;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.sound-option .tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px;
+    border-style: solid;
+    border-color: var(--surface) transparent transparent transparent;
+}
+
+.sound-option:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+.sound-option input[type="radio"] {
+    display: none;
+}
+
+.sound-option span {
+    color: var(--text);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sound-option:has(input[type="radio"]:checked) {
+    background: var(--background);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+.sound-option input[type="radio"]:checked + span {
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.focus-modal form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.focus-modal form button {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+.focus-modal form button:hover {
+    background: var(--primary-dark);
+}
+
+.current-focus {
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.focus-modal .modal-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.focus-modal .modal-buttons button {
+    flex: 1;
+}
+
+.focus-modal .cancel-button {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.focus-modal .cancel-button:hover {
+    background: var(--background);
+}
+
+.close-modal {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff4444;
+    color: white;
+    border: none;
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    max-width: 26px;
+    font-size: 18px;
+    font-weight: 300;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+    line-height: 0;
+    transform: rotate(45deg);
+}
+
+.close-modal::before {
+    content: '+';
+    position: relative;
+    top: -1px;
+}
+
+.close-modal:hover {
+    background: #ff2222;
+    transform: rotate(45deg) scale(1.1);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile Optimizations for Modal */
+@media (max-width: 428px) {
+    .focus-modal {
+        width: calc(100% - 2rem);
+        max-width: none;
+        margin: 0;
+        padding: 1.5rem;
+        border-radius: 16px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        box-sizing: border-box;
+    }
+
+    .focus-modal h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .focus-modal input {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0.875rem;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .focus-modal form button {
+        padding: 0.875rem;
+        font-size: 1rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .sound-options {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .sound-option {
+        padding: 0.625rem;
+    }
+    
+    .sound-prompt {
+        font-size: 0.9rem;
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Ensure these styles are maintained on mobile */
+@media (max-width: 428px) {
+    .close-modal {
+        width: 26px !important;
+        height: 26px !important;
+        min-width: 26px !important;
+        max-width: 26px !important;
+        padding: 0 !important;
+        border-radius: 50% !important;
+        top: -10px !important;
+        right: -10px !important;
+    }
 } 
