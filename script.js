@@ -179,6 +179,22 @@ function toggleTimer() {
     }
 }
 
+function stopAllAudio() {
+    if (currentSound) {
+        currentSound.pause();
+        currentSound = null;
+    }
+    if (currentYouTubePlayer) {
+        currentYouTubePlayer.stopVideo();
+        currentYouTubePlayer.destroy();
+        currentYouTubePlayer = null;
+    }
+    if (currentSoundLoop) {
+        clearInterval(currentSoundLoop);
+        currentSoundLoop = null;
+    }
+}
+
 function startTimer() {
     timerId = setInterval(() => {
         timeLeft--;
@@ -195,6 +211,7 @@ function startTimer() {
                 // Only increment streak when completing a work session
                 incrementStreak();
             }
+            stopAllAudio(); // Stop audio when timer completes
             switchMode();
             alert(isWorkTime ? 'Break is over! Time to work!' : 'Work session complete! Take a break!');
             timerToggleButton.textContent = 'Start';
@@ -234,14 +251,7 @@ function resetTimer() {
     timeLeft = WORK_TIME;
     currentFocus = '';
     resetStreak();
-    if (currentSound) {
-        currentSound.pause();
-        currentSound = null;
-    }
-    if (currentSoundLoop) {
-        clearInterval(currentSoundLoop);
-        currentSoundLoop = null;
-    }
+    stopAllAudio();
     updateStatusText();
     modeToggleButton.textContent = 'Switch to Break';
     timerToggleButton.textContent = 'Start Focus Session';
