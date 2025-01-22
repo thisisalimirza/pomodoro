@@ -324,6 +324,7 @@ html {
     margin-top: 0;
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
+    text-align: center;
 }
 
 .focus-modal input {
@@ -335,6 +336,86 @@ html {
     color: var(--text);
     font-size: 1rem;
     margin-bottom: 1.5rem;
+    box-sizing: border-box;
+}
+
+.sound-selection {
+    margin-bottom: 1.5rem;
+}
+
+.sound-selection h3 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--text);
+    text-align: center;
+}
+
+.sound-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.sound-option {
+    display: flex;
+    align-items: center;
+    padding: 0.875rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: var(--surface);
+    text-align: center;
+    justify-content: center;
+}
+
+.sound-option:hover {
+    border-color: var(--primary);
+    background: var(--background);
+    transform: translateY(-1px);
+}
+
+.sound-option input[type="radio"] {
+    display: none;
+}
+
+.sound-option span {
+    color: var(--text);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.sound-option:has(input[type="radio"]:checked) {
+    background: var(--background);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+.sound-option input[type="radio"]:checked + span {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 428px) {
+    .sound-options {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .sound-option {
+        padding: 0.75rem;
+    }
+}
+
+.focus-modal form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
 
 .focus-modal form button {
@@ -451,6 +532,20 @@ html {
         width: 100%;
         box-sizing: border-box;
     }
+
+    .sound-options {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+    
+    .sound-option {
+        padding: 0.625rem;
+    }
+    
+    .sound-selection h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
 }
 
 /* Ensure these styles are maintained on mobile */
@@ -465,4 +560,154 @@ html {
         top: -10px !important;
         right: -10px !important;
     }
+}
+
+.sound-control-toggle {
+    display: none;  /* Hidden by default */
+    position: absolute;
+    top: 1.5rem;
+    right: 4.75rem;  /* Adjusted from 5.5rem to 4.75rem for better spacing */
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    cursor: pointer;
+    color: var(--text);
+    padding: 0.75rem;
+    font-size: 1.25rem;
+    transition: all 0.2s ease;
+    width: 40px;
+    height: 40px;
+    align-items: center;
+    justify-content: center;
+}
+
+.sound-control-toggle:hover {
+    transform: scale(1.1);
+    background-color: var(--background);
+}
+
+.sound-control-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    z-index: 1000;
+    width: 90%;
+    max-width: 320px;
+    box-shadow: var(--shadow);
+    margin: 0;
+}
+
+.sound-control-panel::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+}
+
+.sound-control-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.sound-control-content h3 {
+    margin: 0;
+    text-align: center;
+    font-size: 1.25rem;
+    color: var(--text);
+}
+
+.volume-control {
+    margin-bottom: 1rem;
+}
+
+.volume-control label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.volume-control input[type="range"] {
+    width: 100%;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    appearance: none;
+    outline: none;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.volume-control input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.sound-control-panel .sound-options {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+}
+
+.sound-control-panel .sound-option {
+    background: var(--background);
+    border: 1px solid var(--border);
+    padding: 0.75rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sound-control-panel .sound-option:hover {
+    border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.sound-control-panel .sound-option:has(input[type="radio"]:checked) {
+    background: var(--surface);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 1px var(--primary);
+}
+
+/* Mobile adjustments */
+@media (max-width: 428px) {
+    .sound-control-panel {
+        width: calc(100% - 3rem);
+        max-width: none;
+        margin: 1rem;
+        padding: 1.25rem;
+    }
+}
+
+/* Convert the panel to use dialog element */
+dialog.sound-control-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    z-index: 1000;
+    width: 90%;
+    max-width: 320px;
+    box-shadow: var(--shadow);
+    margin: 0;
+}
+
+dialog.sound-control-panel::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
 } 

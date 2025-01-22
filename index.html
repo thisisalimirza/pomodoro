@@ -14,10 +14,91 @@
             <form method="dialog">
                 <h2>What are you focusing on?</h2>
                 <input type="text" id="focus-input" placeholder="Enter your focus for this session..." required>
+                <div class="sound-selection">
+                    <h3>Choose Background Sound</h3>
+                    <div class="sound-options">
+                        <label class="sound-option" data-sound="rain">
+                            <input type="radio" name="background-sound" value="rain" checked>
+                            <span>🌧️ Rain</span>
+                        </label>
+                        <label class="sound-option" data-sound="waves">
+                            <input type="radio" name="background-sound" value="waves">
+                            <span>🌊 Ocean Waves</span>
+                        </label>
+                        <label class="sound-option" data-sound="brook">
+                            <input type="radio" name="background-sound" value="brook">
+                            <span>💧 Babbling Brook</span>
+                        </label>
+                        <label class="sound-option" data-sound="birds">
+                            <input type="radio" name="background-sound" value="birds">
+                            <span>🐦 Morning Birds</span>
+                        </label>
+                        <label class="sound-option" data-sound="crickets">
+                            <input type="radio" name="background-sound" value="crickets">
+                            <span>🦗 Crickets</span>
+                        </label>
+                        <label class="sound-option" data-sound="katydids">
+                            <input type="radio" name="background-sound" value="katydids">
+                            <span>🌙 Night Sounds</span>
+                        </label>
+                        <label class="sound-option" data-sound="winter">
+                            <input type="radio" name="background-sound" value="winter">
+                            <span>❄️ Winter Wind</span>
+                        </label>
+                        <label class="sound-option" data-sound="none">
+                            <input type="radio" name="background-sound" value="none">
+                            <span>🔇 No Sound</span>
+                        </label>
+                    </div>
+                </div>
                 <button type="submit">Start Focusing</button>
             </form>
         </dialog>
         <button class="theme-toggle" id="theme-toggle">🌜</button>
+        <button class="sound-control-toggle" id="sound-control-toggle">🔊</button>
+        <dialog class="sound-control-panel" id="sound-control-panel">
+            <div class="sound-control-content">
+                <h3>Sound Settings</h3>
+                <div class="volume-control">
+                    <label for="volume-slider">Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="100" value="30">
+                </div>
+                <div class="sound-options">
+                    <label class="sound-option" data-sound="rain">
+                        <input type="radio" name="background-sound-control" value="rain">
+                        <span>🌧️ Rain</span>
+                    </label>
+                    <label class="sound-option" data-sound="waves">
+                        <input type="radio" name="background-sound-control" value="waves">
+                        <span>🌊 Ocean Waves</span>
+                    </label>
+                    <label class="sound-option" data-sound="brook">
+                        <input type="radio" name="background-sound-control" value="brook">
+                        <span>💧 Babbling Brook</span>
+                    </label>
+                    <label class="sound-option" data-sound="birds">
+                        <input type="radio" name="background-sound-control" value="birds">
+                        <span>🐦 Morning Birds</span>
+                    </label>
+                    <label class="sound-option" data-sound="crickets">
+                        <input type="radio" name="background-sound-control" value="crickets">
+                        <span>🦗 Crickets</span>
+                    </label>
+                    <label class="sound-option" data-sound="katydids">
+                        <input type="radio" name="background-sound-control" value="katydids">
+                        <span>🌙 Night Sounds</span>
+                    </label>
+                    <label class="sound-option" data-sound="winter">
+                        <input type="radio" name="background-sound-control" value="winter">
+                        <span>❄️ Winter Wind</span>
+                    </label>
+                    <label class="sound-option" data-sound="none">
+                        <input type="radio" name="background-sound-control" value="none">
+                        <span>🔇 No Sound</span>
+                    </label>
+                </div>
+            </div>
+        </dialog>
         <h1>Focus Timer</h1>
         <div class="status">
             <p id="status-text">Enter a Deep Work Session</p>

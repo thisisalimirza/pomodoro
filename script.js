@@ -1,6 +1,11 @@
 let timeLeft;
 let timerId = null;
 let isWorkTime = true;
+let isDarkMode = false;
+let currentFocus = '';
+let currentSound = null;
+let currentSoundLoop = null;
+let currentVolume = 0.3;
 
 const minutesDisplay = document.getElementById('minutes');
 const secondsDisplay = document.getElementById('seconds');
@@ -17,8 +22,67 @@ const addTimeButton = document.getElementById('add-time');
 const focusModal = document.getElementById('focus-modal');
 const focusInput = document.getElementById('focus-input');
 const closeModalButton = document.getElementById('close-modal');
-let isDarkMode = false;
-let currentFocus = '';
+const soundControlToggle = document.getElementById('sound-control-toggle');
+const soundControlPanel = document.getElementById('sound-control-panel');
+const volumeSlider = document.getElementById('volume-slider');
+
+// Sound URLs - using local sound files
+const SOUND_URLS = {
+    rain: 'https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3',
+    waves: 'https://assets.mixkit.co/active_storage/sfx/123/123-preview.mp3',
+    fireplace: 'https://assets.mixkit.co/active_storage/sfx/2271/2271-preview.mp3',
+    birds: 'sounds/Morning Bird Songs.mp3',
+    katydids: 'sounds/Katydids in the Night.mp3',
+    crickets: 'sounds/Crickets and Woodpecker at Dusk.mp3',
+    winter: 'sounds/Cold Winter Snow and Wind.mp3',
+    brook: 'sounds/Babbling Brook.mp3'
+};
+
+const soundOptions = document.querySelectorAll('.sound-option');
+soundOptions.forEach(option => {
+    option.addEventListener('click', () => {
+        const soundType = option.getAttribute('data-sound');
+        playBackgroundSound(soundType);
+    });
+});
+
+function playBackgroundSound(soundType) {
+    // Stop any currently playing sound
+    if (currentSound) {
+        currentSound.pause();
+        currentSound = null;
+    }
+    if (currentSoundLoop) {
+        clearInterval(currentSoundLoop);
+        currentSoundLoop = null;
+    }
+
+    // If 'none' is selected or no sound type provided, just return
+    if (!soundType || soundType === 'none') return;
+
+    // Create and play the new sound
+    const soundUrl = SOUND_URLS[soundType];
+    if (soundUrl) {
+        currentSound = new Audio(soundUrl);
+        currentSound.volume = currentVolume;
+        currentSound.dataset.soundType = soundType;
+        
+        // Play the sound and set up looping
+        const playSound = () => {
+            currentSound.currentTime = 0;
+            currentSound.play();
+        };
+        
+        playSound();
+        currentSoundLoop = setInterval(playSound, 4000);
+
+        // Update the radio button in the control panel
+        const radioButton = document.querySelector(`input[name="background-sound-control"][value="${soundType}"]`);
+        if (radioButton) {
+            radioButton.checked = true;
+        }
+    }
+}
 
 // Initially hide the button
 addTimeButton.style.display = 'none';
@@ -87,6 +151,12 @@ function startTimer() {
     }, 1000);
     timerToggleButton.textContent = 'Pause';
     addTimeButton.style.display = 'block';
+    soundControlToggle.style.display = 'flex';
+    
+    // Resume audio if it was previously playing
+    if (currentSound && currentSound.dataset.soundType) {
+        playBackgroundSound(currentSound.dataset.soundType);
+    }
 }
 
 function updateStatusText() {
@@ -105,11 +175,21 @@ function resetTimer() {
     isWorkTime = true;
     timeLeft = WORK_TIME;
     currentFocus = '';
+    if (currentSound) {
+        currentSound.pause();
+        currentSound = null;
+    }
+    if (currentSoundLoop) {
+        clearInterval(currentSoundLoop);
+        currentSoundLoop = null;
+    }
     updateStatusText();
     modeToggleButton.textContent = 'Switch to Break';
     timerToggleButton.textContent = 'Start Focus Session';
     addTimeButton.style.display = 'none';
     updateTimer();
+    soundControlToggle.style.display = 'none';  // Hide sound control on reset
+    soundControlPanel.close();  // Close sound panel if open
 }
 
 function toggleTheme() {
@@ -156,13 +236,17 @@ function initializeTheme() {
 // Call initializeTheme before resetTimer()
 initializeTheme();
 
-// Add event listener for the focus modal form
+// Modify the focus modal form submit handler
 focusModal.querySelector('form').addEventListener('submit', (e) => {
     e.preventDefault();
     currentFocus = focusInput.value.trim();
+    const selectedSound = focusModal.querySelector('input[name="background-sound"]:checked').value;
     focusInput.value = '';
     focusModal.close();
     updateStatusText();
+    if (!currentSound || selectedSound !== currentSound.dataset.soundType) {
+        playBackgroundSound(selectedSound);
+    }
     startTimer();
 });
 
@@ -177,4 +261,56 @@ function pauseTimer() {
     timerId = null;
     timerToggleButton.textContent = 'Start';
     addTimeButton.style.display = 'none';
-} 
+    soundControlToggle.style.display = 'none';
+    soundControlPanel.close();
+    
+    // Pause the audio if it's playing
+    if (currentSound) {
+        currentSound.pause();
+        clearInterval(currentSoundLoop);
+        currentSoundLoop = null;
+    }
+}
+
+// Add event listeners for sound controls
+soundControlToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    soundControlPanel.showModal();
+});
+
+// Close panel when clicking outside
+soundControlPanel.addEventListener('click', (e) => {
+    const rect = soundControlPanel.getBoundingClientRect();
+    const isInDialog = (rect.top <= e.clientY && e.clientY <= rect.bottom &&
+        rect.left <= e.clientX && e.clientX <= rect.right);
+    if (!isInDialog) {
+        soundControlPanel.close();
+    }
+});
+
+// Handle volume changes
+volumeSlider.addEventListener('input', (e) => {
+    updateVolume(e.target.value);
+});
+
+// Handle sound changes from control panel
+document.querySelectorAll('input[name="background-sound-control"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+        const soundType = e.target.value;
+        playBackgroundSound(soundType);
+        
+        // Update the radio button in the modal
+        const modalRadio = document.querySelector(`input[name="background-sound"][value="${soundType}"]`);
+        if (modalRadio) {
+            modalRadio.checked = true;
+        }
+    });
+});
+
+// Add this function to update the volume
+function updateVolume(value) {
+    currentVolume = value / 100;
+    if (currentSound) {
+        currentSound.volume = currentVolume;
+    }
+}
